@@ -35,16 +35,20 @@ enable_language(C ASM)
 add_executable(${CMAKE_PROJECT_NAME}
         Applications/App_DebugTask.c
         Applications/App_DebugTask.h
+        Applications/App_ServoTask.c
+        Applications/App_ServoTask.h
 )
 
 file(GLOB_RECURSE USER_LIB
         "./UserLib/*.*"
+        "./Jlink_RTT/*.*"
 )
 
 file(GLOB_RECURSE PHOENIX_LIB
 #        "./Phoenix_Lib/Bsp/Fdcan/*.c"
 #        "./Phoenix_Lib/Bsp/Log/*.c"
 #        "./Phoenix_Lib/Bsp/Uart/*.c"
+        "./Phoenix_Lib/Module/Servo/*.c"
 )
 
 # Add STM32CubeMX generated sources
@@ -69,7 +73,9 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 #    ./Phoenix_Lib/Bsp/Fdcan/
 #    ./Phoenix_Lib/Bsp/Log/
 #    ./Phoenix_Lib/Bsp/Uart/
+    ./Phoenix_Lib/Module/Servo
     ./UserLib
+    ./Jlink_RTT
 )
 
 # Add project symbols (macros)

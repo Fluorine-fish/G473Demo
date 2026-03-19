@@ -48,6 +48,7 @@
 
 /* USER CODE END Variables */
 osThreadId DebugTaskHandle;
+osThreadId ServoTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -55,6 +56,7 @@ osThreadId DebugTaskHandle;
 /* USER CODE END FunctionPrototypes */
 
 void App_DebugTask(void const * argument);
+extern void App_ServoTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -88,6 +90,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of DebugTask */
   osThreadDef(DebugTask, App_DebugTask, osPriorityNormal, 0, 1024);
   DebugTaskHandle = osThreadCreate(osThread(DebugTask), NULL);
+
+  /* definition and creation of ServoTask */
+  osThreadDef(ServoTask, App_ServoTask, osPriorityNormal, 0, 1024);
+  ServoTaskHandle = osThreadCreate(osThread(ServoTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
