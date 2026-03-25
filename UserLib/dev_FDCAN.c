@@ -1,6 +1,9 @@
 #include "dev_FDCAN.h"
 
 #include "fdcan.h"
+#include "M2006.h"
+
+extern M2006_HandleTypeDef M2006_1;
 
 FDCAN_RxFrame_s FDCAN3_RxFrame = {
     .hcan = &hfdcan3,
@@ -60,10 +63,9 @@ void FDCAN_Transmit(FDCAN_HandleTypeDef *hfdcan, uint8_t *data, uint32_t id) {
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
     if (hfdcan->Instance == hfdcan3.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN3_RxFrame.Header, FDCAN3_RxFrame.RxData);
-
     }else if (hfdcan->Instance == hfdcan2.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN2_RxFrame.Header, FDCAN2_RxFrame.RxData);
-
+        M2006_Update(&M2006_1,FDCAN2_RxFrame.RxData);
     }
 }
 
