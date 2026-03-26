@@ -33,9 +33,12 @@ M2006_HandleTypeDef M2006_1;
 extern PID_Param PID_Speed_M2006_1;
 extern PID_Param PID_Angle_M2006_1;
 extern int32_t angle;
+extern int32_t last_angle;
 
+const float yaw_bias = PI / 4;
 float servo_angle = 0.0f;
-float target_pitch = 10.0f;
+float target_pitch = 0.2f;
+float target_yaw = 0.0f;
 bool isopen = true;
 
 void M2006_Angel(double target_angle, int16_t Max_speed) {
@@ -57,11 +60,28 @@ void App_ServoTask(void const * argument) {
     servo2 = Servo_Register(&servo2_config);
     M2006_Init(&M2006_1, &hfdcan2, 1);
 
+    while (M2006_1.torque == 0);
+
+    //堵转回0
+    for (uint8_t i = 0; i < 130; i++) {
+        M2006_Crtl_Currency(&M2006_1, -700);
+        osDelay(3);
+    }
+    //阻塞主函数 直到M2006电机零点标记完成,堵转认为标记完成
+    while (M2006_1.speed_rpm < -100) {
+        M2006_Crtl_Currency(&M2006_1, -700);
+        osDelay(3);
+    }
+
+    angle = 0;
+    last_angle = M2006_1.angle_ecd;
+    angle += 2000; //防止从反方向转到100
+
+    osDelay(500);
+
     while (1) {
-        // if (isopen) angle = (angle > 3.14) ? 0 : angle + 0.001f;
-        //
-        // Servo_Control(servo1, servo_angle);//通过修改angle变量来控制舵机角度
-        // Servo_Control(servo2, servo_angle);//通过修改angle变量来控制舵机角度
+        Servo_Control(servo1, target_yaw + yaw_bias);//通过修改angle变量来控制舵机角度
+        Servo_Control(servo2, target_yaw + yaw_bias);//通过修改angle变量来控制舵机角度
 
         M2006_Angel(target_pitch, 1000);
 
