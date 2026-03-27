@@ -63,6 +63,7 @@ void FDCAN_Transmit(FDCAN_HandleTypeDef *hfdcan, uint8_t *data, uint32_t id) {
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
     if (hfdcan->Instance == hfdcan3.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN3_RxFrame.Header, FDCAN3_RxFrame.RxData);
+        FDCAN_Transmit(&hfdcan3,FDCAN3_RxFrame.RxData, FDCAN3_RxFrame.Header.Identifier);
     }else if (hfdcan->Instance == hfdcan2.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN2_RxFrame.Header, FDCAN2_RxFrame.RxData);
         M2006_Update(&M2006_1,FDCAN2_RxFrame.RxData);
@@ -72,6 +73,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs) {
     if (hfdcan->Instance == hfdcan3.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &FDCAN3_RxFrame.Header, FDCAN3_RxFrame.RxData);
+        FDCAN_Transmit(&hfdcan3,FDCAN3_RxFrame.RxData, FDCAN3_RxFrame.Header.Identifier);
     }else if (hfdcan->Instance == hfdcan2.Instance) {
         HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &FDCAN2_RxFrame.Header, FDCAN2_RxFrame.RxData);
     }
